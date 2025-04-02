@@ -1,3 +1,5 @@
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne, JoinColumn } from "typeorm";
+
 interface ICategoria {
     id?: number;
     nome: string;
@@ -10,13 +12,19 @@ interface IProduto {
     categoria: ICategoria;
 }
 
-export class Categoria implements ICategoria {
+@Entity()
+export class Categoria extends BaseEntity implements ICategoria {
+    
+    @PrimaryGeneratedColumn()
     id?: number;
-    nome: string;
+    
+    @Column( {nullable: false} )
+    nome!: string;
 
-    constructor(nome: string, id?: number) {
-        this.nome = nome;
-        this.id = id;
+    constructor(nome?: string, id?: number) {
+        super()
+        if (nome) this.nome = nome;
+        if (id) this.id = id;
     }
 
     toString():string {
@@ -24,18 +32,29 @@ export class Categoria implements ICategoria {
     }
 }
 
-export class Produto implements IProduto{
-    id?: number;
-    nome: string;
-    preco: number;
-    categoria: ICategoria;
+@Entity()
+export class Produto extends BaseEntity implements IProduto{
 
-    constructor(nome: string, preco: number, categoria: ICategoria, id?: number ){
-        this.id = id;
-        this.nome = nome;
-        this.preco = preco;
-        this.categoria = categoria;
-    }
+    @PrimaryGeneratedColumn()
+    id?: number;
+
+    @Column()
+    nome!: string;
+
+    @Column()
+    preco!: number;
+
+    @ManyToOne(() => Categoria, { eager: true }) // Relacionamento Many-to-One com Categoria
+    @JoinColumn() // Indica que esta coluna é uma FK
+    categoria!: ICategoria;
+
+    constructor(nome?: string, preco?: number, categoria?: ICategoria, id?: number) {
+        super()
+        if (nome) this.nome = nome;
+        if (preco) this.preco = preco;
+        if (categoria) this.categoria = categoria;
+        if (id) this.id = id;
+        }
 
     toString():string {
         return `Produto: ${this.nome} Preço: R$ ${this.preco} ${this.categoria}`
