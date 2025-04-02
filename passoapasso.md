@@ -126,12 +126,11 @@ nome!: string;
     "emitDecoratorMetadata": true
 ```
 
-10. Crie os métodos para executar o CRUD das classes:
+10. Comece a incluir os métodos do ORM para iteragir com o banco:
 
 ```typescript
-static async getById(id: number): Promise<Categoria | null> {
     return await Categoria.findOneBy( {id} )
-}
+
 ```
 
 Atualize o código, para o .action de Categoria fazer a seguinte chamada: `return Categoria.getById(argv.id)`
